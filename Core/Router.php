@@ -1,12 +1,12 @@
 <?php
-namespace Core;
+namespace Core; 
 
 class Router {
 	protected $routes = [];
 
 	public function get($uri, $controller)
 	{
-		$this->routes[] = [
+		$this->routes[] = [							//push a new item to the $routes array
 			'uri' => $uri,
 			'controller' => $controller,
 			'method' => 'GET'

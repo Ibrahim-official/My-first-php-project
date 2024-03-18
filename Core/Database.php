@@ -1,7 +1,7 @@
 <?php
 namespace Core;
-
-use PDO;
+//unless you specify otherwise every single class referenced within this file will assume ths namespace
+use PDO; //Imports the class, otherwise it would squash PDO class with Core namespace
 
 class Database{
 	public $connection;

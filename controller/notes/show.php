@@ -7,7 +7,8 @@ $db = new Database($config['database']);
 $currentUserId = 1;
 
 if ($_SERVER['REQUEST_METHOD']=== 'POST'){
-	$note = $db->query('SELECT * FROM `notes` WHERE id = :id', ['id' => $_GET['id']	])->findOrFail();
+
+	$note = $db->query('SELECT * FROM `notes` WHERE id = :id', ['id' => $_GET['id']	])->findOrFail();  //Authorization and Authentication tht the id really is urs
 
 	$condition = $note['User_id'] === $currentUserId;
 	authorize($condition);
@@ -15,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
 	$db->query('delete from notes where id = :id', [
 		'id' => $_GET['id']
 	]);
-	header('location: /notes');
+	header('location: /notes'); //After deleting the note, ths redirects to the notes page
 	exit();
 }
 else

@@ -6,13 +6,14 @@ require base_path('Core/Validator.php');
 
 $config =  require base_path('config.php');
 $db = new Database($config['database']);
+$errors = []; 
+//Initially,we only declare the errors variable IF the form was submitted.So no matter what there will be an errors variable available 
 
 /*
-if (! Validator::email('hkjgfcgk')){
-	dd('This is not a valid email address');
-}
+	if (! Validator::email('hkjgfcgk')){
+		dd('This is not a valid email address');
+	}
 */
-$errors = [];
 
 if($_SERVER['REQUEST_METHOD']==='POST'){
 
