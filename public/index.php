@@ -1,5 +1,7 @@
 <?php
 
+use Core\Session;
+
 session_start();
 
 const BASE_PATH = __DIR__.'\\..\\';
@@ -39,6 +41,9 @@ $method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
 	$method = isset($_POST['_method']) ? $_POST['_method'] : $_SERVER['REQUEST_METHOD'];
 	I wanna use ths $_POST['_method'] if its set and not null otherwise(??) ths $_SERVER['REQUEST_METHOD']
 	All ths part came from the old router I built 
-	Purpose of URI parsing line is to extract the path from the URI, which is often used in routing to determine which endpoint or controller should handle the request.*/
+	Purpose of URI parsing line is to extract the path from the URI, which is often used in routing to determine which endpoint or controller should handle the request.
+*/
 
 $router->route($uri, $method); //router-class, route-method of tht class
+
+Session::unflash();	
