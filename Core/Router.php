@@ -54,6 +54,10 @@ class Router {
 		return $this;
 	}
 
+	public static function previousUrl(){
+		return $_SERVER['HTTP_REFERER'];
+	}
+
 	public function route($uri, $method)
 	{
 		foreach ($this->routes as $route){ //$routes-array[], $route-loop_variable, route-method

@@ -1,6 +1,7 @@
 <?php
 
 use Core\Session;
+use Core\ValidationException;
 
 session_start();
 
@@ -37,13 +38,15 @@ $routes = require base_path('routes.php'); //ths will populate the routes[] in R
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];   //Figure out the current URI -	Parse it
 
 $method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-/*
-	$method = isset($_POST['_method']) ? $_POST['_method'] : $_SERVER['REQUEST_METHOD'];
-	I wanna use ths $_POST['_method'] if its set and not null otherwise(??) ths $_SERVER['REQUEST_METHOD']
-	All ths part came from the old router I built 
-	Purpose of URI parsing line is to extract the path from the URI, which is often used in routing to determine which endpoint or controller should handle the request.
-*/
 
-$router->route($uri, $method); //router-class, route-method of tht class
+try{
+	$router->route($uri, $method); //router-class, route-method of tht class
 
+} catch (ValidationException $exception) 
+{	
+	Session::flash('errors', $exception->errors);
+    Session::flash('old', $exception->old);
+
+    return redirect($router->previousUrl());
+}
 Session::unflash();	
