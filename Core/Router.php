@@ -1,68 +1,96 @@
 <?php
 namespace Core; 
 
+use Core\Middleware\Auth;
+use Core\Middleware\Guest;
+use Core\Middleware\Middleware;
+
+
 class Router {
 	protected $routes = [];
 
-	public function get($uri, $controller)
+	public function add($method, $uri, $controller)
 	{
-		$this->routes[] = [							//push a new item to the $routes array
+		$this->routes[] = [
 			'uri' => $uri,
 			'controller' => $controller,
-			'method' => 'GET'
+			'method' => $method,
+			'middleware' => null
 		];
+		
+		return $this;
+	}
+
+	public function get($uri, $controller)
+	{
+		return $this->add('GET', $uri, $controller);
 	}
 
 	public function post($uri, $controller)
 	{
-		$this->routes[] = [
-			'uri' => $uri,
-			'controller' => $controller,
-			'method' => 'POST'
-		];
+		return $this->add('POST', $uri, $controller);
 	}
 
 	public function delete($uri, $controller)
 	{
-		$this->routes[] = [
-			'uri' => $uri,
-			'controller' => $controller,
-			'method' => 'DELETE'
-		];
+		return $this->add('DELETE', $uri, $controller);
 	}
 
 	public function patch($uri, $controller)
 	{
-		$this->routes[] = [
-			'uri' => $uri,
-			'controller' => $controller,
-			'method' => 'PATCH'
-		];
+		return $this->add('PATCH', $uri, $controller);
 	}
 
 	public function put($uri, $controller)
 	{
-		$this->routes[] = [
-			'uri' => $uri,
-			'controller' => $controller,
-			'method' => 'PUT'
-		];
+		return $this->add('PUT', $uri, $controller);
+	}
+
+
+	public function only($key)
+	{
+		$this->routes[array_key_last($this->routes)]['middleware'] = $key;
+
+		return $this;
 	}
 
 	public function route($uri, $method)
 	{
-		foreach ($this->routes as $route){
-			if($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
-				// dd($route);
-				return require base_path($route['controller']);
+		foreach ($this->routes as $route){ //$routes-array[], $route-loop_variable, route-method
+			
+			if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
+				
+				Middleware::resolve($route['middleware']);
+				
+				return require base_path('Http/controllers/'.$route['controller']);
 			}
 		}
 		$this->abort();
 	}
-	protected function abort($code = 404){                                  //fn to abort with the given status code
+	protected function abort($code = 404){			//fn to abort with the given status code
 	http_response_code($code); 
-	require base_path("views/{$code}.php");									//requiring VIEWS
-																			//Double-quotation for template string(string with variable in it)
-	die(); 
+	require base_path("views/{$code}.php");			//requiring VIEWS
+													//Double-quotation for template string(string with variable in it)
+	die();
 	}
 }
+
+
+
+/*
+
+$routes = [
+	[
+		'uri' => '/',
+		'controller' => 'controller/index.php',
+		'method' => 'GET'
+	],
+	[
+		'uri' => '/note/create'
+		'controller' => 'controller/notes/create.php',
+		'method' => 'get'
+	],
+
+
+]
+*/
